@@ -1,0 +1,17 @@
+name: cruise-outbreak-sim
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.9
+  - networkx=2.8
+  - numpy>=1.21
+  - matplotlib>=3.5
+  - scipy>=1.7
+  - pip
+
+  - pip:
+      - seirsplus
+      - pyyaml

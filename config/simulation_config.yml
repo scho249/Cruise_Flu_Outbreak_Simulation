@@ -1,0 +1,46 @@
+population:
+  n_passengers: 1000
+  passenger_crew_ratio: 2.5
+  cabin_size_min: 2
+  cabin_size_max: 5
+  seed: 123
+  deck_contacts: 3
+  transient_contacts: 5
+  crew_peers: 10
+  service_contacts: 40
+  cross_crew_contacts: 3 # service and non service interactions
+  nonservice_transient_count: 5 # random "bumping into" situation with passenger and non-service
+  facility_k_per_node: 2 # sparse graph
+
+
+facilities:
+  lounge:
+    count: 6
+    size: 30
+    duration: [40, 120]
+    repeats: 3
+
+  pool:
+    count: 4
+    size: 20
+    duration: [15, 90]
+    repeats: 2
+
+  elevator:
+    count: 14
+    size: 8
+    duration: [1, 3]
+    repeats: 10
+
+disease:
+  beta: 0.8
+  infectious_days: 7
+  incubation_logn_mean: 1.63
+  incubation_logn_sigma: 0.5
+  mu_I: 0.03
+  p: 0.74
+
+intervention:
+  beta_quarantine: 0.01
+  theta_E: 0.1
+  theta_I: 0.2

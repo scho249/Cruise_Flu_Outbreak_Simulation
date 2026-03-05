@@ -49,27 +49,32 @@ The threee main scenarios to compare the effectiveness of intervention strategie
 
 ## Requirements
 
-- Python 3.9+
-- `networkx` (version 2.8)
-- `numpy`
-- `matplotlib`
-- `seirsplus` 
-- `scipy`
+- python=3.9
+- networkx=2.8
+- numpy>=1.21
+- matplotlib>=3.5
+- scipy>=1.7
+- pip
 
+All the above dependencies are saved in `environment.yml`.
 
 ## Files
 
-- `cruise_outbreak_simulation_simplified.py`: The main simulation script. Output is printed to the console and includes time-stepped simulation logs and summary results.
+- `src/network_builder.py`: The main script for creating cruise network. For visualization, selected subgraph is saved as json file in `results` folder. 
+- `src/utils.py`: Script contains helper and calculation functions
+- `src/outbreak_simulation.py`: The main script for running SEIRS simulation on the cruise network.
+- `confg/simulation_config.yml`: User defined parameters that are relevant to simulation envrionment.
 - `README.md`: Project overview and usage instructions.
 
 ## How to Run
 
 1. **Install Dependencies** 
 
-Ensure Python 3.9+ is installed. Then install required packages by running:
+Create conda environment by: 
 ```bash
-pip3 install seirsplus networkx==2.8 numpy matplotlib scipy
+conda env create -f environment.yml
 ```
+This will install all required packages for running the simulation. 
 
 2. **Run the Simulation**
 

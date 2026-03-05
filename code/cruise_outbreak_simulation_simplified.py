@@ -3,7 +3,7 @@ import networkx as nx
 from seirsplus.models import SEIRSNetworkModel
 import random
 
-class SimpleCruiseSimulation:
+class CruiseSimulation:
     
     def __init__(self, n_people: int = 3700):
         # Calculate passengers and crew (roughly 70% passengers, 30% crew)
@@ -29,7 +29,8 @@ class SimpleCruiseSimulation:
         print(f"🚢 Cruise Intervention Simulation: {n_people:,} people")
         print(f"   {self.n_passengers:,} passengers, {self.n_crew:,} crew")
     
-    def build_simple_network(self) -> nx.Graph:
+    def build_cruise_network(self) -> nx.Graph:
+        random.seed(123)
         G = nx.Graph()
         
         # Add nodes with crew/passenger distinction
@@ -96,6 +97,7 @@ class SimpleCruiseSimulation:
     
     def build_quarantine_network(self) -> nx.Graph:
         """Build quarantine network - cabin isolation only."""
+        random.seed(123)
         G_Q = nx.Graph()
         
         # Add all nodes with same attributes

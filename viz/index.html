@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<head>
+<style>
+    .link {
+        stroke: #999;           /* Grey color */
+        stroke-opacity: 0.6;    /* Slightly transparent */
+        stroke-width: 1.5px;    /* Thickness */
+        fill: none;             /* Prevents weird triangular fills */
+    }
+</style>
+<meta charset="utf-8">
+<title></title>
+</head>
+
+<body>
+    <div class="controls">
+        <label for="dropdown">Filter Contact Layer: </label>
+        <select id="dropdown"></select>
+    </div>
+<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+
+const margin = {top: 20, bottom: 30, left: 40, right: 30}
+const width = window.innerWidth
+const height = window.innerHeight - 80
+
+
+const PATH = "../results/network_graph.json"
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("text")
+    .text("Cruise Simulation")
+
+
+d3.json(PATH).then(function(data) {
+    var nodes = data.nodes
+    var links = data.links
+
+    const allTypes = links.flatMap(d => d.contact_type);
+    const distinctTypes = ["all",...new Set(allTypes)].sort((a, b) => {
+        if (a === "all") return -1; // Keep 'all' at the top
+        if (b === "all") return 1;
+        return a.localeCompare(b);
+    });
+
+    const dropdown = d3.select("#dropdown");
+        
+    dropdown.selectAll('option')
+        .data(distinctTypes)
+        .enter()
+        .append('option')
+        .text(d => d === "all" ? "All" : (d.charAt(0).toUpperCase() + d.slice(1)))
+        .attr("value", function (d) {return d})
+
+
+    const initialType = distinctTypes[0]
+
+    
+    var force = d3.forceSimulation(nodes)
+        .force("link", d3.forceLink(links).id(d => d.id).distance(30))
+        .force("center", d3.forceCenter(width/2, height/2))
+        .force("charge", d3.forceManyBody().strength(-5))
+        .force("x", d3.forceX(width / 2).strength(0.05)) 
+        .force("y", d3.forceY(height / 2).strength(0.05))
+        .on("tick", ticked)
+
+    
+    const linkG = svg.append("g").attr("class", "links")
+    const nodeG = svg.append("g").attr("class", "nodes")
+
+    let link = linkG.selectAll("line");
+    let node = nodeG.selectAll(".node");
+
+    function update(selectedType) {
+        let filteredLinks = links.filter(d => {
+            if (selectedType === "all") return true;
+            return d.contact_type.includes(selectedType);
+        });
+
+        if (selectedType === "all") {
+            filteredLinks = filteredLinks.filter(() => Math.random() < 0.4); // only show high weight when all selected
+        } else {
+            // For specific layers, maybe show a bit more detail
+            filteredLinks = filteredLinks.filter(() => Math.random() < 0.6);
+        }
+
+        link = link.data(filteredLinks, d => d.source.id + "-" + d.target.id);
+        link.exit().remove();
+        link = link.enter().append("line")
+            .attr("class", "link")
+            .merge(link)
+
+        node = node.data(nodes, d => d.id); 
+        const nodeEnter = node.enter().append("g")
+            .attr("class", "node")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
+
+        nodeEnter.append("circle")
+            .attr("r", 3)
+            .attr("fill", d => {
+                if (d.type === "passenger") {
+                    return "#3498db"; // Blue for passengers
+                } else {
+                // check crew sub-type
+                    return d.crew_type === "passenger_service" 
+                        ? "#e67e22"  // Orange for service crew
+                        : "#50c878"; // yellow for non-service crew
+                }})
+    
+
+        node = nodeEnter.merge(node)
+
+        force.force("link").links(filteredLinks)
+        force.alpha(1).restart()
+    }
+
+    // initial run
+    update(initialType)
+
+
+    dropdown.on("change", function() {
+        update(d3.select(this).property("value"))
+    });
+
+
+    function ticked() {
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        node.attr("transform", d => `translate(${d.x},${d.y})`);
+
+    }
+
+    function dragstarted(d) {
+        if (!d3.event.active) force.alphaTarget(0.3).restart();
+        d.fx = d.x; d.fy = d.y;
+    }
+    function dragged(d) { d.fx = d3.event.x; d.fy = d3.event.y; }
+    
+    function dragended(d) {
+        if (!d3.event.active) force.alphaTarget(0);
+        d.fx = null; d.fy = null;
+    }
+
+
+
+}).catch(function(error) {
+    console.log(error)
+});
+
+</script>
+</body>
+</html>
