@@ -159,7 +159,7 @@ Example visualization layers:
 ---
 
 ## Project Structure
-
+```bash
 Cruise_Flu_Outbreak_Simulation
 │
 ├── src
@@ -178,7 +178,7 @@ Cruise_Flu_Outbreak_Simulation
 │
 ├── environment.yml
 └── README.md
-
+```
 ## Requirements
 
 Dependencies are managed using **conda**.
