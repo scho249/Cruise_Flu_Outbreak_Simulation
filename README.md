@@ -159,3 +159,80 @@ Example visualization layers:
 ---
 
 ## Project Structure
+
+Cruise_Flu_Outbreak_Simulation
+│
+├── src
+│ ├── network_builder.py
+│ ├── outbreak_simulation.py
+│ └── utils.py
+│
+├── config
+│ └── simulation_config.yml
+│
+├── results
+│ └── network_graph.json
+│
+├── viz
+│ └── index.html
+│
+├── environment.yml
+└── README.md
+
+## Requirements
+
+Dependencies are managed using **conda**.
+
+Main libraries:
+
+- Python 3.9
+- networkx
+- numpy
+- scipy
+- matplotlib
+- seirsplus
+
+All dependencies are included in:
+
+`environment.yml`
+
+---
+
+## Setup
+
+Create the conda environment:
+
+```bash
+conda env create -f environment.yml
+```
+
+Activate the environment: 
+
+```bash
+conda activate cruise-outbreak-sim
+```
+
+
+---
+
+## Running the Simulation
+
+Generate the cruise contact network:
+
+```bash
+python -m src.network_builder
+```
+
+Run the outbreak simulation:
+
+```bash
+python -m src.outbreak_simulation
+```
+
+This will:
+
+Build the cruise contact network
+
+Run SEIRS simulations under different intervention scenarios
+
+Produce outbreak statistics and visualization-ready outputs
